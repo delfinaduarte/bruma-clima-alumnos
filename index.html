@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#203e40">
+    <meta name="description" content="Tu pausa para mirar el cielo. Clima actual y pronóstico para tus ciudades favoritas.">
+    <title>Bruma — El clima, a tu ritmo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="api.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav class="sidebar" aria-label="Navegación principal">
+        <a class="brand" href="./" aria-label="Bruma, inicio">≋</a>
+        <div class="side-links">
+          <button class="nav-button active" id="home-button" title="Clima actual" aria-label="Clima actual">▦</button>
+          <button class="nav-button" id="forecast-button" title="Ver pronóstico" aria-label="Ver pronóstico">▤</button>
+          <button class="nav-button" id="location-button" title="Usar mi ubicación" aria-label="Usar mi ubicación">◎</button>
+        </div>
+        <span class="side-caption">MIRÁ EL CIELO</span>
+        <button class="nav-button" id="info-button" title="Acerca de Bruma" aria-label="Acerca de Bruma">ⓘ</button>
+      </nav>
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">UN MOMENTO PARA VOS</span>
+            <p class="greeting">Hola, ¿cómo está tu cielo?</p>
+          </div>
+          <div class="header-actions">
+            <form id="search-form" class="search-form" role="search">
+              <span aria-hidden="true">⌕</span>
+              <label class="visually-hidden" for="city-input">Buscar una ciudad</label>
+              <input class="search-input" id="city-input" type="search" placeholder="Buscar una ciudad" aria-label="Buscar una ciudad" maxlength="100" required>
+              <button type="submit" aria-label="Buscar">↗</button>
+            </form>
+            <button id="unit-button" class="unit-button" aria-label="Cambiar a grados Fahrenheit">°C <span>/ °F</span>
+            </button>
+          </div>
+        </header>
+        <div class="status" id="status" role="status" aria-live="polite">Consultando el cielo…</div>
+        <div class="dashboard">
+          <section class="weather-story" aria-labelledby="condition-title">
+            <div class="section-label">
+              <span class="live-dot"></span> EL CLIMA AHORA <time class="local-date" id="local-date"></time>
+            </div>
+            <h1 class="condition-title" id="condition-title">Cada cielo<br>cuenta algo.</h1>
+            <p id="weather-description" class="description">Buscá una ciudad y descubrí qué tiene preparado el día.</p>
+            <div class="story-footer">
+              <span class="small-line"></span>
+              <span id="updated">TU PRÓXIMA PAUSA, AL AIRE LIBRE.</span>
+            </div>
+            <section class="forecast" id="forecast" aria-labelledby="forecast-heading">
+              <div class="forecast-header">
+                <h2 id="forecast-heading">Los próximos días</h2>
+                <span>PRONÓSTICO · 3 DÍAS</span>
+              </div>
+              <div id="day-cards" class="day-cards">
+                <button type="button" class="day-card" aria-pressed="false" hidden>
+                  <span class="day-name">Día</span>
+                  <span class="day-temperature">—°</span>
+                  <span class="day-bottom">
+                    <img alt="" hidden>
+                    <span class="rain">—%</span>
+                  </span>
+                </button>
+                <button type="button" class="day-card" aria-pressed="false" hidden>
+                  <span class="day-name">Día</span>
+                  <span class="day-temperature">—°</span>
+                  <span class="day-bottom">
+                    <img alt="" hidden>
+                    <span class="rain">—%</span>
+                  </span>
+                </button>
+                <button type="button" class="day-card" aria-pressed="false" hidden>
+                  <span class="day-name">Día</span>
+                  <span class="day-temperature">—°</span>
+                  <span class="day-bottom">
+                    <img alt="" hidden>
+                    <span class="rain">—%</span>
+                  </span>
+                </button>
+              </div>
+              <div class="chart" aria-hidden="true">
+                <svg viewBox="0 0 600 100" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="white" stop-opacity=".25"/>
+                      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path id="chart-area" fill="url(#chart-fill)"/>
+                  <path id="chart-line" fill="none" stroke="#e6f3ed" stroke-width="2"/>
+                </svg>
+              </div>
+              <p id="day-detail" class="day-detail">Seleccioná un día para ver más detalles.</p>
+            </section>
+          </section>
+          <aside class="weather-panels" aria-label="Datos del clima">
+            <section class="current-card glass" aria-labelledby="current-city">
+              <div class="card-heading">
+                <h2 class="current-city" id="current-city">—</h2>
+                <span aria-hidden="true">↗</span>
+              </div>
+              <p id="country" class="muted">Tu lugar en el mundo</p>
+              <div class="temperature-row">
+                <span id="current-temp">—°</span>
+                <img id="current-icon" alt="" hidden>
+              </div>
+              <p id="feels-like" class="feels-like">Sensación térmica —</p>
+              <dl class="metrics">
+                <div>
+                  <dt>↝ Viento</dt>
+                  <dd id="wind">—</dd>
+                </div>
+                <div>
+                  <dt>♧ Humedad</dt>
+                  <dd id="humidity">—</dd>
+                </div>
+                <div>
+                  <dt>◉ Índice UV</dt>
+                  <dd id="uv">—</dd>
+                </div>
+              </dl>
+            </section>
+            <div class="cities-heading">
+              <h2 id="cities-title">Otros cielos</h2>
+              <span>ARGENTINA</span>
+            </div>
+            <div id="other-cities" class="other-cities" role="group" aria-labelledby="cities-title">
+              <button type="button" class="city-card" data-ciudad="Buenos Aires">
+                <span>
+                  <strong>Buenos Aires</strong>
+                  <small>Consultar clima ↗</small>
+                </span>
+                <span class="city-weather">
+                  <span class="city-temp">—°</span>
+                  <img alt="" hidden>
+                </span>
+              </button>
+              <button type="button" class="city-card" data-ciudad="Córdoba">
+                <span>
+                  <strong>Córdoba</strong>
+                  <small>Consultar clima ↗</small>
+                </span>
+                <span class="city-weather">
+                  <span class="city-temp">—°</span>
+                  <img alt="" hidden>
+                </span>
+              </button>
+              <button type="button" class="city-card" data-ciudad="Mendoza">
+                <span>
+                  <strong>Mendoza</strong>
+                  <small>Consultar clima ↗</small>
+                </span>
+                <span class="city-weather">
+                  <span class="city-temp">—°</span>
+                  <img alt="" hidden>
+                </span>
+              </button>
+            </div>
+            <p class="panel-note">Un mismo mundo. Mil formas de mirar el cielo.</p>
+          </aside>
+        </div>
+        <footer class="site-footer">
+          <a class="wordmark" href="./">bruma<span>®</span>
+          </a>
+          <span>EL CLIMA, A TU RITMO.</span>
+          <span>Datos de <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> ↗</span>
+        </footer>
+      </main>
+    </div>
+    <dialog class="info-dialog" id="info-dialog" aria-labelledby="info-title">
+      <button class="close-dialog" id="close-dialog" aria-label="Cerrar">×</button>
+      <span class="eyebrow">ACERCA DE</span>
+      <h2 id="info-title">Hola, somos bruma.</h2>
+      <p>Una ventana al clima de tu ciudad. Buscá un lugar, consultá los próximos tres días o usá tu ubicación actual.</p>
+      <p>Los datos se actualizan al consultar Open-Meteo. La ubicación se utiliza únicamente para buscar el clima.</p>
+    </dialog>
+  </body>
+</html>

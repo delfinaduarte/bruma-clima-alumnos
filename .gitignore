@@ -1,0 +1,16 @@
+# Credenciales y dependencias
+env
+.env
+.env.*
+node_modules/
+# Informes y documentos ajenos al sitio
+*.pdf
+*.docx
+*.doc
+# Archivos de herramientas y editores
+.codex/
+.agents/
+.openai/
+AGENTS.md
+.vscode/
+.DS_Store
